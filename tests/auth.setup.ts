@@ -1,29 +1,32 @@
 import { test as setup, expect } from '@playwright/test';
 import fs from 'fs';
 
-const authFile = 'playwright/.auth/user.json';
+export const AUTH_FILE = 'playwright/.auth/user.json';
 
-// Logs in once and saves the session so every test starts authenticated.
-// Set HRMS_USERNAME / HRMS_PASSWORD in the environment. If the app needs no
-// login, the setup just saves an empty session.
+/**
+ * Signs in once and saves the session to playwright/.auth/user.json.
+ *
+ * - With HRMS_USERNAME and HRMS_PASSWORD set (see .env.example), it signs in automatically.
+ * - Without them, run `npm run login`: a browser opens and you sign in yourself
+ *   (password, Google or Microsoft). The script waits up to 5 minutes.
+ *
+ * The saved session is reused until it expires; delete the file to sign in again.
+ */
 setup('authenticate', async ({ page }) => {
+  setup.setTimeout(5 * 60_000);
   fs.mkdirSync('playwright/.auth', { recursive: true });
-  await page.goto('/employees/new');
+  await page.goto('/login');
 
-  const password = page.locator('input[type="password"]');
-  if (await password.isVisible({ timeout: 5_000 }).catch(() => false)) {
-    const username = process.env.HRMS_USERNAME;
-    const pwd = process.env.HRMS_PASSWORD;
-    if (!username || !pwd) throw new Error('Set HRMS_USERNAME and HRMS_PASSWORD to log in.');
-
-    await page
-      .locator('input[type="email"], input[name*="user" i], input[name*="email" i], input[id*="user" i], input[id*="email" i]')
-      .first()
-      .fill(username);
-    await password.fill(pwd);
-    await page.getByRole('button', { name: /log ?in|sign ?in|submit/i }).click();
-    await expect(password).toBeHidden({ timeout: 20_000 });
+  const username = process.env.HRMS_USERNAME;
+  const password = process.env.HRMS_PASSWORD;
+  if (username && password) {
+    await page.getByLabel('Email').fill(username);
+    await page.getByLabel('Password', { exact: true }).fill(password);
+    await page.getByRole('button', { name: 'Sign In' }).click();
   }
 
-  await page.context().storageState({ path: authFile });
+  await page.waitForURL(url => !url.pathname.startsWith('/login'), { timeout: 5 * 60_000 });
+  await page.goto('/employees/new');
+  await expect(page.getByRole('heading', { name: 'Add New Employee' })).toBeVisible();
+  await page.context().storageState({ path: AUTH_FILE });
 });
