@@ -3,7 +3,7 @@
 Playwright + TypeScript tests for the **Add New Employee** form at
 https://sapiensdemo.inaivia.com/employees/new.
 
-Selectors come from the live page. Every test (except the opt-in one) **blocks the create-employee API**, so running the suite never creates a record.
+Selectors come from the live page. **The same suite is also available in Java** (Maven + JUnit 5): see [`java/README.md`](java/README.md). Every test (except the opt-in one) **blocks the create-employee API**, so running the suite never creates a record.
 
 ## Project structure
 
@@ -13,6 +13,7 @@ Selectors come from the live page. Every test (except the opt-in one) **blocks t
 ├── docs/
 │   ├── test-report.md        Manual test report (2026-10-08) with results
 │   └── screenshots/          Screenshots of each failure
+├── java/                     Same suite in Playwright for Java (Maven + JUnit 5)
 ├── fixtures/
 │   ├── create-guard.ts       Blocks + counts POST /employees/ calls
 │   └── test-fixtures.ts      `test` with `form` and `createGuard` fixtures

@@ -6,6 +6,9 @@
   "playwright.showTrace": false,
   "files.exclude": {
     "**/node_modules": true,
-    "test-results": true
-  }
+    "test-results": true,
+    "java/target": true
+  },
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.import.maven.enabled": true
 }
