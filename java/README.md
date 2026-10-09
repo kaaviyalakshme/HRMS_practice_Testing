@@ -1,6 +1,6 @@
 # Add Employee tests: Playwright for Java
 
-This is the Java (Maven + JUnit 5) version of the TypeScript suite in the repo root. It covers the same checks and uses the same selectors and the same safety rule: **no test creates an employee** unless you run the real-submit profile.
+This is a Maven + JUnit 5 suite for the Add Employee form. Safety rule: **no test creates an employee** unless you run the real-submit profile.
 
 ## Structure
 
@@ -35,7 +35,7 @@ mvn exec:java -Dexec.args="install chromium"          # downloads the browser
 mvn test -Plogin                                      # a browser opens: sign in; session is saved
 ```
 
-The session is saved to `../playwright/.auth/user.json`, which is the same file the TypeScript suite uses, so signing in once covers both suites. To sign in automatically instead, set `HRMS_USERNAME` and `HRMS_PASSWORD` as environment variables.
+The session is saved to `../playwright/.auth/user.json`. To sign in automatically instead, set `HRMS_USERNAME` and `HRMS_PASSWORD` as environment variables.
 
 ## Run
 
